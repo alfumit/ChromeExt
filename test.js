@@ -1,13 +1,41 @@
-	var match = new chrome.declarativeWebRequest.RequestMatcher({
-			  url: {hostSuffix: "kaspersky.com"} });
 
+chrome.app.runtime.onLaunched.addListener(function() {
+  chrome.app.window.create('extension1.html', {
+    'bounds': {
+      'width': 960,
+      'height': 1280
+    }
+  }, function(app) {
+        onload = function() {}
+        var webview = document.getElementById("webpage");
+		console.log(webview);
+       // var indicator = document.querySelector(".indicator");
+          //webview.executeScript({ code: "document.body.style.backgroundColor = 'red'" });
+		  webview.executeScript(
+    {code: 'document.documentElement.innerHTML'},
+    function(results) {
+      console.log(results);
+    });
+		//app.contentWindow.addEventListener('DOMContentLoaded', function() {
+		//   webview.executeScript({ code: "document.body.style.backgroundColor = 'red'" });			
+	//	});	  	  
+	  
+	  }
+  );
+});
+/*
+onload = function() {}
+        var webview = document.getElementById("webpage");
+        var indicator = document.querySelector(".indicator");
 
+		app.contentWindow.addEventListener('DOMContentLoaded', function() {
+		   webview.executeScript({ code: "document.body.style.backgroundColor = 'red'" });			
+		});
+*/
+chrome.serial.getDevices(function(devices) {
+	console.log(devices);
+});
 
-    var greeting = "hello, ";
-    var button = document.getElementById("mybutton");
-    button.person_name = "Bob";
-    button.addEventListener("click", function() {
-      console.log("OOO");
-      console.log(match);
-	  console.log("ZZZZ");
-    }, false);
+chrome.runtime.getBackgroundPage(function (url) {
+	  console.log(url);
+	});	

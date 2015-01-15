@@ -3,12 +3,15 @@
   "name": "Hello World",
   "description" : "Bla-bla-bla",
   "version": "1.0",
-  "browser_action": {
-    "default_icon": "2rightarrow.png",
-    "default_popup": "extension1.html"
-   },
-   "permissions": [
+  "app": {
+    "background": {
+      "scripts": ["test.js"]
+    }
+  },
+  "icons": { "16": "calculator-16.png", "128": "calculator-128.png" },
+  "permissions": [
           "declarativeWebRequest",
+          "webview",
           "serial",
           "*://*/*"
     ]
