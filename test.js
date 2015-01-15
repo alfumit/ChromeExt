@@ -1,3 +1,5 @@
+var id;
+
 chrome.app.runtime.onLaunched.addListener(function() {
   chrome.app.window.create('extension1.html', {
     'bounds': {
@@ -5,6 +7,7 @@ chrome.app.runtime.onLaunched.addListener(function() {
       'height': 1280
     }
   });
+	 // if(document.getElementById("idHolder")) id = document.getElementById("idHolder").innerHTML;  
 });
 
 
@@ -26,24 +29,37 @@ var ab2str = function(buf) {
 var foo = str2ab("Default text");
 
 onload = function() {
+	  if(document.getElementById("idHolder")) id = document.getElementById("idHolder").innerHTML; 
+
   var webview = document.getElementById("webpage");
-  webview.addEventListener("loadstop", function(){
-	webview.executeScript(
-    {code: 'document.getElementById("tempo-tracker-actions").addEventListener("click", function() { alert(document.getElementById("summary-val").innerHTML)}); '},
-      function(results) {
-        console.log(results);
-      }
-	 ); 	  
-  });
-  
-var id;
+  if(webview){
+	  webview.addEventListener("loadstop", function(){
+		  //if(document.getElementById("tempo-tracker-actions")) {
+			webview.executeScript(
+			{code: 'document.getElementById("tempo-tracker-actions").addEventListener("click", function() { alert(document.getElementById("summary-val").innerHTML)}); '},
+			  function(results) {
+				console.log(results);
+			  }
+			 );
+		  //}
+	  });
+  }
+
 chrome.serial.getDevices(function(devices) {
 	console.log(devices);
 	});
+	
+	
+	
 	chrome.serial.connect("COM4",{bitrate: 9600},function(info){
 		 console.log(info);
+	     id = id || info.connectionId;
+	     var idHolder = document.createElement("div");
+	   idHolder.innerHTML = id;
+	   idHolder.id = "idHolder";
+	   document.body.appendChild(idHolder);
+	   console.log()
 		 //chrome.serial.onReceive.addListener(function(incoming) {console.log(incoming)});
-		 id = info.connectionId;
 		 webview.addEventListener("dialog", function(msg){
           foo = str2ab(msg.messageText);  
 		  chrome.serial.send(id,foo,function(info){ console.log("erm ",info)});		  
@@ -52,9 +68,11 @@ chrome.serial.getDevices(function(devices) {
 };
 
 chrome.runtime.onSuspend.addListener(function() {
-   
+	// var idHolder = document.createElement("div").innerHTML = id;
+	// idHolder.id = "idHolder";
+	// document.body.appendChild(idHolder);
+
   chrome.serial.disconnect(id, function() { console.log("Did it!")});
-  setTimeout(function(){alert('hi')},10000);
 });
 
 
