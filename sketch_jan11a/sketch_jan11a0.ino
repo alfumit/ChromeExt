@@ -9,24 +9,6 @@
 #include <LiquidCrystal.h>
 #include <math.h>
 
-/*
-
-int convArr[8] = {0x16,0x2b,0x3b,0x4b,0x16,0x56,0x8b,0x97};
-
-int symbolConversion(char str) {
-  boolean change = false;
-  int res;
-  for(int i =0;i<sizeof(refArr);i++) {
-     if(str==refArr[i]) { 
-       change = true;
-       res = i; 
-       break; 
-     }
-  }
-  if(change)  return res; 
-  else return false; 
-}
-*/
 LiquidCrystal lcd(13,12,11,10,9,8);
 String valueStorage = "Please enter";
 unsigned long thermoWait = millis();
@@ -73,18 +55,13 @@ void loop(){
   float lightValue = 5.0 * (analogRead(lightPin) / 1024.0);
   float  resistor = (10.0*5.0)/lightValue-10.0;
   float  lx = 2223.35*pow(resistor,-10/8);
-    char charBufT[25];
-    String strT = "temp = ";
-    strT+= temperature;
-    strT.toCharArray(charBufT, strT.length());
-    
-    char charBufL[25];
-    String strL = "lx = ";
-    strL+= lx;
-    strL.toCharArray(charBufL, strL.length());
-    
-    Serial.println(strT);
-    Serial.println(strL);
+//  Serial.print(millis());
+//  Serial.print(" wait till ");
+//  Serial.println(lightWait);
+    Serial.print("temp = ");
+    Serial.println(temperature);
+    Serial.print("lx = ");
+    Serial.println(lx);
 
   if(!thermoKeyPressed) {
     //   In case if the key is pressed temperature information is closed
@@ -93,6 +70,8 @@ void loop(){
     lcd.setCursor(0,1);
     lcd.print(temperature);
 
+//    Serial.print("The temp is ");
+//    Serial.println(temperature);
     delay(3000);
   } 
   else if(!lightKeyPressed) {
@@ -101,6 +80,9 @@ void loop(){
     lcd.print("The light is");
     lcd.setCursor(0,1);
     lcd.print(lx);
+
+//    Serial.print("Lux ");
+//    Serial.println(lx);
     delay(3000);
   }
   else {
@@ -108,22 +90,15 @@ void loop(){
     while(Serial.available()) {
       incomingChar = Serial.read();
       valueRead.concat(incomingChar);
-      Sreial.println(incomingChar)
     }
 
     if(valueRead!="") {
       valueStorage = valueRead;
       lcd.clear();
-      //for(int i=0;i<valueRead.length();i++) {
-      //  if(symbolConversion(valueRead[i])!=false) {
-      //    valueRead[i] = convArr[symbolConversion(valueRead[i])];
-      //    Serial.println(valueRead);
-      //  }
-     // }
       lcd.print(valueRead);
 
       if(valueRead.length() > 16) { 
-        for(int i=0; i < 32; i++)  {
+        for(int i=0; i < valueRead.length()- 16; i++)  {
           lcd.scrollDisplayLeft();
           delay(300);
         }
@@ -136,7 +111,7 @@ void loop(){
       lcd.print(valueStorage);
       delay(1000);
       if(valueStorage.length() > 16) { 
-        for(int i=0; i < 32; i++)  {
+        for(int i=0; i < valueStorage.length()- 16; i++)  {
           lcd.scrollDisplayLeft();
           delay(300);
         }

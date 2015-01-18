@@ -1,4 +1,4 @@
-var id;
+var id, combinedStr,tillEnd = "",
 
 chrome.app.runtime.onLaunched.addListener(function() {
   chrome.app.window.create('extension1.html', {
@@ -11,24 +11,39 @@ chrome.app.runtime.onLaunched.addListener(function() {
 
 
 var str2ab = function(str) {
+
   var encodedString = unescape(encodeURIComponent(str));
+
   var bytes = new Uint8Array(encodedString.length);
   for (var i = 0; i < encodedString.length; ++i) {
     bytes[i] = encodedString.charCodeAt(i);
-
   }
   return bytes.buffer;
 };
 var ab2str = function(buf) {
   var bufView = new Uint8Array(buf);
   var encodedString = String.fromCharCode.apply(null, bufView);
-  return decodeURIComponent(escape(encodedString));
+  // BufView contains charCodes and we're looking for "10" the end of line. After we find EOL we return the value to be inserted 
+  // we need to save the rest of data sent in global variable and start filling it till the next EOL.
+  //If no EOL found than just return an empty line, it wont get inserted
+  for(i=0; i<bufView.length;i++) {
+    tillEnd += encodedString[i];
+	if(bufView[i]==10) {
+	//	var c = decodeURIComponent(escape(tillEnd));
+	    var c = tillEnd;
+		for(j=i;j<bufView.length;j++) {
+			tillEnd="";
+			tillEnd += encodedString[j];
+		}
+		return c;
+	}
+}
+  return "";
 };
 
 var foo = str2ab("Default text");
 
 onload = function() {
-
   var webview = document.getElementById("webpage");
   if(webview) {
 	webview.addEventListener("loadstop", function(){
@@ -54,7 +69,6 @@ onload = function() {
 			console.log(info);
 			//chrome.serial.onReceive.addListener(function(incoming) {console.log("QQ "+incoming)});
 			id = info.connectionId;
-			console.log(id+' '+(typeof id));
 			var idHolder = document.createElement("div");
 			idHolder.id = "idHolder";
 			idHolder.innerHTML = id;
@@ -65,7 +79,12 @@ onload = function() {
 			});	 
 		});
     } else {
-		//chrome.serial.onReceive.addListener(function(incoming) {document.getElementByTagName("h2").innerHTML = "Recieved ",ab2str(incoming.data)});
+		chrome.serial.onReceive.addListener(function(incoming) {
+		    var stringRes = ab2str(incoming.data);
+
+			if(stringRes.indexOf("temp")!=-1)  document.getElementsByClassName("temp")[0].innerHTML = stringRes.substr(7,stringRes.length-7);
+			if(stringRes.indexOf("lx")!=-1) document.getElementsByClassName("lx")[0].innerHTML =  stringRes.substr(5,stringRes.length-5);
+		});
 		console.log("Found id on background page ");
 		webview.addEventListener("dialog", function(msg){
 			foo = str2ab(msg.messageText);

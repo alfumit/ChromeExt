@@ -3,12 +3,16 @@
 <title>This is my first Chrome extension</title>
 <style>
 body {width: 1280px; height: 1000px}
+ul {list-style: none}
+ul li {padding: 0px; margin: 0px; display: inline-block; font-size: 20px; font-weight: bold; color: red }
 </style>
 </head>
 <body>
-<h2>
-Realm of King James I
-</h2>
+<ul>
+<li>Temperature = <span class="temp"></span> &deg;C</li>
+<li> | </li>
+<li>Luminosity = <span class="lx"></span> lux</li>
+</ul>
   <button id="mybutton" style="display: none">click me</button>
    <webview id="webpage" src="https://jira.kaspersky.com" style="width:1280px; height:960px"></webview> 
   <script src="test.js"></script>
