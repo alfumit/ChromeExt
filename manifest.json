@@ -1,8 +1,8 @@
 {
   "manifest_version": 2,
   "name": "Hello World",
-  "description" : "Bla-bla-bla",
-  "version": "1.0",
+  "description" : "Arduino control Extension",
+  "version": "2.0",
   "app": {
     "background": {
       "scripts": ["test.js"]
