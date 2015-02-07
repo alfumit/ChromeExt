@@ -39,3 +39,9 @@ Results.
 Hurrah! Now everybody knows when I'm busy and, looking at the whole set up, knows that it's serious. Plus I have a legal right to stop working when a warning pops up on inappropriate conditions. Cool, right?
 
 You can find detailed information on my account in GitHub, soon there will be docs and schematics.
+
+Hacks:
+
+1. Arduino UNO restarts as soon as you establish serial connection. To avoid that you need to start your Arduino and then put a 10mF capacitor between reset pin and the ground.
+2. USB sends values as in chunks 1 byte length, and when the value comes it doesn't necessarily contain all the values you meant to send. To solve this you need to track incoming
+ code "10" which corresponds the end of line. Only then you'll get the lines right 
