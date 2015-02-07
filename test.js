@@ -69,7 +69,7 @@ onload = function() {
     console.log("Below is a type detection");
 	console.log(id);
 	if(!id) {
-		chrome.serial.connect("COM4",{bitrate: 9600},function(info){
+		chrome.serial.connect("COM3",{bitrate: 9600},function(info){
 			console.log(info);
 			//chrome.serial.onReceive.addListener(function(incoming) {console.log("QQ "+incoming)});
 			id = info.connectionId;
